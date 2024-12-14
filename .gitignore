@@ -10,3 +10,7 @@ parser.hh
 scanner.cpp
 log.txt
 interpret
+.vscode/
+parser.hpp
+position.hh
+stack.hh

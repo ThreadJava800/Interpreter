@@ -19,6 +19,9 @@ else                      return yy::parser::token::ELSE;
 while                     return yy::parser::token::WHILE;
 
 "+"                       return yy::parser::token::ADD;
+"-"                       return yy::parser::token::SUB;
+"*"                       return yy::parser::token::MUL;
+"/"                       return yy::parser::token::DIV;
 
 integer                   return yy::parser::token::INTEGER;
 double                    return yy::parser::token::DOUBLE;

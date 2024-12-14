@@ -31,6 +31,9 @@
 %token <std::string> NUMBER
 
 %left ADD
+%left SUB
+%left MUL
+%left DIV
 
 %type <ASTNode*> ast_node
 
@@ -50,9 +53,29 @@ ast_node:
         $$ = new ValueASTNode(atoi($1.c_str()));
     }
 |
+    VAR_NAME
+    {
+        $$ = new VariableASTNode($1);
+    }
+|
     ast_node ADD ast_node
     {
         $$ = new ArithmeticsASTNode(ArithmeticOperators::ADD, $1, $3);
+    }
+|
+    ast_node SUB ast_node
+    {
+        $$ = new ArithmeticsASTNode(ArithmeticOperators::SUB, $1, $3);
+    }
+|
+    ast_node MUL ast_node
+    {
+        $$ = new ArithmeticsASTNode(ArithmeticOperators::MUL, $1, $3);
+    }
+|
+    ast_node DIV ast_node
+    {
+        $$ = new ArithmeticsASTNode(ArithmeticOperators::DIV, $1, $3);
     }
 ;
 

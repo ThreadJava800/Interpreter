@@ -8,3 +8,5 @@ parser.cpp
 parser.gv
 parser.hh
 scanner.cpp
+log.txt
+interpret

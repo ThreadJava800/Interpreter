@@ -1,4 +1,7 @@
 project(ParserExample)
+
+set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+
 set(
     HEADERS
     ${ParserExample_SOURCE_DIR}/driver.hh
@@ -25,13 +28,13 @@ FLEX_TARGET(
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 add_executable(
-    02-ParserExample
+    interpret
     main.cpp
     driver.cpp
     ${BISON_MyParser_OUTPUTS}
     ${FLEX_MyScanner_OUTPUTS}
 )
-target_include_directories(02-ParserExample PRIVATE ${ParserExample_SOURCE_DIR})
+target_include_directories(interpret PRIVATE ${ParserExample_SOURCE_DIR})
 
 
 

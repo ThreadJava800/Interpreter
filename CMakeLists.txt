@@ -5,6 +5,9 @@ set(
     ${ParserExample_SOURCE_DIR}/parser.hh
     )
 
+find_package(BISON)
+find_package(FLEX)
+
 BISON_TARGET(
     MyParser
     parser.y

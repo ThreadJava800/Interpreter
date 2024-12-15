@@ -17,11 +17,18 @@ if                        return yy::parser::token::IF;
 then                      return yy::parser::token::THEN;
 else                      return yy::parser::token::ELSE;
 while                     return yy::parser::token::WHILE;
+writeln                   return yy::parser::token::WRITELN;
 
 "+"                       return yy::parser::token::ADD;
 "-"                       return yy::parser::token::SUB;
 "*"                       return yy::parser::token::MUL;
 "/"                       return yy::parser::token::DIV;
+
+":"                       return yy::parser::token::COLON;
+";"                       return yy::parser::token::SEMICOLON;
+"."                       return yy::parser::token::DOT;
+"("                       return yy::parser::token::LEFTBR;
+")"                       return yy::parser::token::RIGHTBR;
 
 integer                   return yy::parser::token::INTEGER;
 double                    return yy::parser::token::DOUBLE;

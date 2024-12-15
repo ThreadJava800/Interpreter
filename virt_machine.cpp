@@ -91,6 +91,8 @@ ASTNodeValue ArithmeticsASTNode::getValue() const
     const ASTNodeValue left_val  = left->getValue();
     const ASTNodeValue right_val = right->getValue();
 
+    ASTNodeValue result;
+
     if (left_val.type != DataType::INTEGER || right_val.type != DataType::INTEGER)
     {
         std::cerr << "Attempt to add incorrect types! Aborting!\n";
@@ -100,16 +102,16 @@ ASTNodeValue ArithmeticsASTNode::getValue() const
     switch (oper)
     {
     case ArithmeticOperators::ADD:
-        std::cout << left_val.int_val + right_val.int_val << '\n';
+        result =  left_val.int_val + right_val.int_val;
         break;
     case ArithmeticOperators::SUB:
-        std::cout << left_val.int_val - right_val.int_val << '\n';
+        result = left_val.int_val - right_val.int_val;
         break;
     case ArithmeticOperators::MUL:
-        std::cout << left_val.int_val * right_val.int_val << '\n';
+        result = left_val.int_val * right_val.int_val;
         break;
     case ArithmeticOperators::DIV:
-        std::cout << left_val.int_val / right_val.int_val << '\n';
+        result = left_val.int_val / right_val.int_val;
         break;
     default:
         break;
@@ -118,7 +120,7 @@ ASTNodeValue ArithmeticsASTNode::getValue() const
     delete left;
     delete right;
 
-    return 0;
+    return result;
 }
 
 ASTNodeValue VariableASTNode::getValue() const
@@ -138,4 +140,25 @@ void CreateVarCommand::execute()
     default:
         break;
     }
+}
+
+void PrintCommand::execute()
+{
+    assert(ast_node);
+
+    const ASTNodeValue node_val = ast_node->getValue();
+
+    switch (node_val.type)
+    {
+    case DataType::INTEGER:
+        std::cout << node_val.int_val << '\n';
+        break;
+    case DataType::STRING:
+        std::cout << node_val.string_val << '\n';
+        break;
+    default:
+        break;
+    }
+
+    delete ast_node;
 }

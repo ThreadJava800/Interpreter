@@ -133,3 +133,16 @@ private:
     DataType var_type;
     std::string var_name;
 };
+
+class PrintCommand : public Command
+{
+public:
+    explicit PrintCommand(const ASTNode *ast_node_) :
+        ast_node (ast_node_)
+    {}
+
+    void execute() override;
+
+private:
+    const ASTNode *ast_node;
+};

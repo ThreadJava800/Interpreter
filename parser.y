@@ -38,14 +38,27 @@
 %token <std::string> VAR_NAME
 %token <std::string> NUMBER
 
+%precedence NOT
+
 %left ADD
 %left SUB
 %left MUL
 %left DIV
+%left EQUALS
+%left LESS
+%left LESS_OR_EQ
+%left MORE
+%left MORE_OR_EQ
+%left OR
+%left AND
 
 %type <ASTNode*> ast_node
+%type <ASTNode*> ast_node_and_or
+%type <ASTNode*> ast_node_compare
+%type <ASTNode*> ast_node_add
 %type <ASTNode*> ast_node_mul
 %type <ASTNode*> ast_node_brackets
+%type <ASTNode*> ast_node_not
 %type <ASTNode*> ast_node_leaf
 %type <Command*> action
 %type <std::vector<Command*>*> actions
@@ -55,26 +68,26 @@
 %%
 
 program_entry:
-    PROGRAM VAR_NAME SEMICOLON declare_all BEGIN_ actions END DOT
+    PROGRAM VAR_NAME SEMICOLON VAR declare_all BEGIN_ actions END DOT
     {
-        assert($4);
-        assert($6);
+        assert($5);
+        assert($7);
 
         // execute declares
-        for (const auto com : *($4))
+        for (const auto com : *($5))
         {
             com->execute();
             delete com;
         }
-        delete $4;
+        delete $5;
 
         // execute commands
-        for (const auto com : *($6))
+        for (const auto com : *($7))
         {
             com->execute();
             delete com;
         }
-        delete $6;
+        delete $7;
     }
 ;
 
@@ -83,10 +96,10 @@ declare_all:
         $$ = new std::vector<Command*>();
     }
 |
-    VAR declare_all declare_single
+    declare_all declare_single
     {
-        $2->push_back($3);
-        $$ = $2;
+        $1->push_back($2);
+        $$ = $1;
     }
 ;
 
@@ -127,6 +140,62 @@ action:
 ;
 
 ast_node:
+    ast_node_and_or
+    {
+        $$ = $1;
+    }
+;
+
+ast_node_and_or:
+    ast_node_compare
+    {
+        $$ = $1;
+    }
+|
+    ast_node AND ast_node
+    {
+        $$ = new LogicAndOrASTNode(LogicOperators::AND, $1, $3);
+    }
+|
+    ast_node OR ast_node
+    {
+        $$ = new LogicAndOrASTNode(LogicOperators::OR, $1, $3);
+    }
+;
+
+ast_node_compare:
+    ast_node_add
+    {
+        $$ = $1;
+    }
+|
+    ast_node_add LESS ast_node_add
+    {
+        $$ = new ComparatorASTNode(ComparatorOperators::LESS, $1, $3);
+    }
+|
+    ast_node_add LESS_OR_EQ ast_node_add
+    {
+        $$ = new ComparatorASTNode(ComparatorOperators::LESS_OR_EQ, $1, $3);
+    }
+|
+    ast_node_add MORE ast_node_add
+    {
+        $$ = new ComparatorASTNode(ComparatorOperators::MORE, $1, $3);
+    }
+|
+    ast_node_add MORE_OR_EQ ast_node_add
+    {
+        $$ = new ComparatorASTNode(ComparatorOperators::MORE_OR_EQ, $1, $3);
+    }
+|
+    ast_node_add EQUALS ast_node_add
+    {
+        $$ = new ComparatorASTNode(ComparatorOperators::EQ, $1, $3);
+    }
+;
+
+ast_node_add:
     ast_node_mul
     {
         $$ = $1;
@@ -161,7 +230,7 @@ ast_node_mul:
 ;
 
 ast_node_brackets:
-    ast_node_leaf
+    ast_node_not
     {
         $$ = $1;
     }
@@ -169,6 +238,18 @@ ast_node_brackets:
     LEFTBR ast_node RIGHTBR
     {
         $$ = $2;
+    }
+;
+
+ast_node_not:
+    ast_node_leaf
+    {
+        $$ = $1;
+    }
+|
+    NOT ast_node
+    {
+        $$ = new LogicNotASTNode($2);
     }
 ;
 

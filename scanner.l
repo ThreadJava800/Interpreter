@@ -23,13 +23,22 @@ writeln                   return yy::parser::token::WRITELN;
 "-"                       return yy::parser::token::SUB;
 "*"                       return yy::parser::token::MUL;
 "/"                       return yy::parser::token::DIV;
+"="                       return yy::parser::token::EQUALS;
+"<"                       return yy::parser::token::LESS;
+"<="                      return yy::parser::token::LESS_OR_EQ;
+">"                       return yy::parser::token::MORE;
+">="                      return yy::parser::token::MORE_OR_EQ;
+
+not                       return yy::parser::token::NOT;
+and                       return yy::parser::token::AND;
+or                        return yy::parser::token::OR;
 
 ":"                       return yy::parser::token::COLON;
 ";"                       return yy::parser::token::SEMICOLON;
 "."                       return yy::parser::token::DOT;
 "("                       return yy::parser::token::LEFTBR;
 ")"                       return yy::parser::token::RIGHTBR;
-"="                       return yy::parser::token::ASSIGN;
+":="                      return yy::parser::token::ASSIGN;
 
 integer                   return yy::parser::token::INTEGER;
 double                    return yy::parser::token::DOUBLE;

@@ -22,6 +22,21 @@ enum class ArithmeticOperators
     DIV
 };
 
+enum class ComparatorOperators
+{
+    LESS,
+    LESS_OR_EQ,
+    MORE,
+    MORE_OR_EQ,
+    EQ
+};
+
+enum class LogicOperators
+{
+    AND,
+    OR
+};
+
 class ASTNodeValue
 {
 public:
@@ -110,6 +125,51 @@ public:
 private:
     const ASTNode *left, *right;
     ArithmeticOperators oper;
+};
+
+class ComparatorASTNode : public ASTNode
+{
+public:
+    explicit ComparatorASTNode(const ComparatorOperators oper_, const ASTNode *left_, const ASTNode *right_) :
+        oper  (oper_),
+        left  (left_),
+        right (right_)
+    {}
+
+    ASTNodeValue getValue() const override;
+
+private:
+    const ASTNode *left, *right;
+    ComparatorOperators oper;
+};
+
+class LogicNotASTNode : public ASTNode
+{
+public:
+    explicit LogicNotASTNode(const ASTNode *val_) :
+        val (val_)
+    {}
+
+    ASTNodeValue getValue() const override;
+
+private:
+    const ASTNode *val;
+};
+
+class LogicAndOrASTNode : public ASTNode
+{
+public:
+    explicit LogicAndOrASTNode(const LogicOperators oper_, const ASTNode *left_, const ASTNode *right_) :
+        oper  (oper_),
+        left  (left_),
+        right (right_)
+    {}
+
+    ASTNodeValue getValue() const override;
+
+private:
+    const ASTNode *left, *right;
+    LogicOperators oper;
 };
 
 class Command

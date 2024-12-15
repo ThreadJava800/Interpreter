@@ -91,7 +91,7 @@ ASTNodeValue ArithmeticsASTNode::getValue() const
     const ASTNodeValue left_val  = std::move(left->getValue());
     const ASTNodeValue right_val = std::move(right->getValue());
 
-    ASTNodeValue result;
+    int result = 0;
 
     if (left_val.type != DataType::INTEGER || right_val.type != DataType::INTEGER)
     {
@@ -117,6 +117,93 @@ ASTNodeValue ArithmeticsASTNode::getValue() const
         break;
     }
     
+    delete left;
+    delete right;
+
+    return result;
+}
+
+ASTNodeValue ComparatorASTNode::getValue() const
+{
+    assert(left);
+    assert(right);
+
+    const ASTNodeValue left_val  = std::move(left->getValue());
+    const ASTNodeValue right_val = std::move(right->getValue());
+
+    int result = 0;
+
+    if (left_val.type != DataType::INTEGER || right_val.type != DataType::INTEGER)
+    {
+        std::cerr << "Attempt to compare incorrect types! Aborting!\n";
+        exit(-1);
+    }
+
+    switch (oper)
+    {
+    case ComparatorOperators::EQ:
+        result = left_val.int_val == right_val.int_val;
+        break;
+    case ComparatorOperators::LESS:
+        result = left_val.int_val < right_val.int_val;
+        break;
+    case ComparatorOperators::LESS_OR_EQ:
+        result = left_val.int_val <= right_val.int_val;
+        break;
+    case ComparatorOperators::MORE:
+        result = left_val.int_val > right_val.int_val;
+        break;
+    case ComparatorOperators::MORE_OR_EQ:
+        result = left_val.int_val >= right_val.int_val;
+        break;
+    default:
+        break;
+    }
+
+    delete left;
+    delete right;
+
+    return result;
+}
+
+ASTNodeValue LogicNotASTNode::getValue() const
+{
+    assert(val);
+
+    const ASTNodeValue node_val  = std::move(val->getValue());
+    if (node_val.type != DataType::INTEGER)
+    {
+        std::cerr << "Attempt to operate logically on incorrect types! Aborting!\n";
+        exit(-1);
+    }
+
+    delete val;
+    
+    return !node_val.int_val;
+}
+
+ASTNodeValue LogicAndOrASTNode::getValue() const
+{
+    assert(left);
+    assert(right);
+
+    const ASTNodeValue left_val  = std::move(left->getValue());
+    const ASTNodeValue right_val = std::move(right->getValue());
+
+    int result = 0;
+
+    switch (oper)
+    {
+    case LogicOperators::OR:
+        result = left_val.int_val || right_val.int_val;
+        break;
+    case LogicOperators::AND:
+        result = left_val.int_val && right_val.int_val;
+        break;
+    default:
+        break;
+    }
+
     delete left;
     delete right;
 

@@ -29,6 +29,7 @@ writeln                   return yy::parser::token::WRITELN;
 "."                       return yy::parser::token::DOT;
 "("                       return yy::parser::token::LEFTBR;
 ")"                       return yy::parser::token::RIGHTBR;
+"="                       return yy::parser::token::ASSIGN;
 
 integer                   return yy::parser::token::INTEGER;
 double                    return yy::parser::token::DOUBLE;

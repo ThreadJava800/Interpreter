@@ -88,21 +88,21 @@ ASTNodeValue ArithmeticsASTNode::getValue() const
     assert(left);
     assert(right);
 
-    const ASTNodeValue left_val  = left->getValue();
-    const ASTNodeValue right_val = right->getValue();
+    const ASTNodeValue left_val  = std::move(left->getValue());
+    const ASTNodeValue right_val = std::move(right->getValue());
 
     ASTNodeValue result;
 
     if (left_val.type != DataType::INTEGER || right_val.type != DataType::INTEGER)
     {
-        std::cerr << "Attempt to add incorrect types! Aborting!\n";
+        std::cerr << "Attempt to operate incorrect types! Aborting!\n";
         exit(-1);
     }
 
     switch (oper)
     {
     case ArithmeticOperators::ADD:
-        result =  left_val.int_val + right_val.int_val;
+        result = left_val.int_val + right_val.int_val;
         break;
     case ArithmeticOperators::SUB:
         result = left_val.int_val - right_val.int_val;
@@ -146,7 +146,7 @@ void PrintCommand::execute()
 {
     assert(ast_node);
 
-    const ASTNodeValue node_val = ast_node->getValue();
+    const ASTNodeValue node_val = std::move(ast_node->getValue());
 
     switch (node_val.type)
     {
@@ -159,6 +159,15 @@ void PrintCommand::execute()
     default:
         break;
     }
+
+    delete ast_node;
+}
+
+void AssignCommand::execute()
+{
+    assert(ast_node);
+
+    variables[var_name] = std::move(ast_node->getValue());
 
     delete ast_node;
 }

@@ -23,6 +23,7 @@
 %token ELSE
 %token WHILE
 %token WRITELN
+%token ASSIGN
 
 %token INTEGER
 %token DOUBLE
@@ -114,6 +115,11 @@ action:
     WRITELN LEFTBR ast_node RIGHTBR
     {
         $$ = new PrintCommand($3);
+    }
+|
+    VAR_NAME ASSIGN ast_node
+    {
+        $$ = new AssignCommand($1, $3);
     }
 ;
 

@@ -1,4 +1,7 @@
 program example;
+var 
+    summa: integer;
 begin
-    writeln(123 + 10)
+    summa = 123 + 10
+    writeln(summa)
 end.

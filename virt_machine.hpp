@@ -87,7 +87,7 @@ class VariableASTNode : public ASTNode
 {
 public:
     explicit VariableASTNode(const std::string var_name_) :
-        var_name (var_name_)
+        var_name (std::move(var_name_))
     {}
 
     ASTNodeValue getValue() const override;
@@ -124,7 +124,7 @@ class CreateVarCommand : public Command
 public:
     explicit CreateVarCommand(const DataType var_type_, const std::string var_name_) :
         var_type (var_type_),
-        var_name (var_name_)
+        var_name (std::move(var_name_))
     {}
 
     void execute() override;
@@ -144,5 +144,20 @@ public:
     void execute() override;
 
 private:
+    const ASTNode *ast_node;
+};
+
+class AssignCommand : public Command
+{
+public:
+    explicit AssignCommand(const std::string var_name_, const ASTNode *ast_node_) :
+        var_name (std::move(var_name_)),
+        ast_node (ast_node_)
+    {}
+
+    void execute() override;
+
+private:
+    const std::string var_name;
     const ASTNode *ast_node;
 };

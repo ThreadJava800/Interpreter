@@ -19,6 +19,9 @@ else                      return yy::parser::token::ELSE;
 while                     return yy::parser::token::WHILE;
 writeln                   return yy::parser::token::WRITELN;
 do                        return yy::parser::token::DO;
+to                        return yy::parser::token::TO;
+downto                    return yy::parser::token::DOWNTO;
+for                       return yy::parser::token::FOR;
 
 "+"                       return yy::parser::token::ADD;
 "-"                       return yy::parser::token::SUB;

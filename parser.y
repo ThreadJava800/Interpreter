@@ -25,6 +25,9 @@
 %token WRITELN
 %token ASSIGN
 %token DO
+%token TO
+%token DOWNTO
+%token FOR
 
 %token INTEGER
 %token DOUBLE
@@ -152,6 +155,16 @@ action:
     WHILE ast_node DO BEGIN_ actions END
     {
         $$ = new WhileCommand($2, $5);
+    }
+|
+    FOR VAR_NAME ASSIGN ast_node TO ast_node DO BEGIN_ actions END
+    {
+        $$ = new ForCommand($2, $4, $6, $9, 1);
+    }
+|
+    FOR VAR_NAME ASSIGN ast_node DOWNTO ast_node DO BEGIN_ actions END
+    {
+        $$ = new ForCommand($2, $4, $6, $9, -1);
     }
 ;
 

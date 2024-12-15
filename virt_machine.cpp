@@ -331,3 +331,66 @@ WhileCommand::~WhileCommand()
     }
     delete cycle_com;
 }
+
+void ForCommand::execute()
+{
+    assert(start_val);
+    assert(end_val);
+    assert(cycle_com);
+
+    const VariableASTNode cycle_var(start_var_name);
+    AssignCommand var_setter(start_var_name, 0);
+
+    var_setter.renewValue(start_val);
+    var_setter.execute();
+
+    ASTNodeValue cycle_var_int = std::move(cycle_var.getValue());
+    const ASTNodeValue end_val_int = std::move(end_val->getValue());
+
+    if (cycle_var_int.type != DataType::INTEGER || end_val_int.type != DataType::INTEGER)
+    {
+        std::cerr << "Attempt to use for case as not numeric value! Aborting!\n";
+        exit(-1);
+    }
+
+    int i;
+    if (cycle_step >= 0)
+    {
+        for (
+                i = cycle_var_int.int_val; 
+                i < end_val_int.int_val; 
+                i += cycle_step, var_setter.renewValue(new ValueASTNode(i)), var_setter.execute()
+            )
+        {
+            for (const auto com : *(cycle_com))
+            {
+                com->execute();
+            }
+        }
+    }
+    else
+    {
+        for (
+                i = cycle_var_int.int_val; 
+                i > end_val_int.int_val; 
+                i += cycle_step, var_setter.renewValue(new ValueASTNode(i)), var_setter.execute()
+            )
+        {
+            for (const auto com : *(cycle_com))
+            {
+                com->execute();
+            }
+        }
+    }
+}
+
+ForCommand::~ForCommand()
+{
+    delete end_val;
+
+    for (const auto com : *(cycle_com))
+    {
+        delete com;
+    }
+    delete cycle_com;
+}

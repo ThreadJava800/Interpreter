@@ -18,10 +18,17 @@ begin
         writeln(52)
     end
 
-    while i <= 10 do
+    while i <= 5 do
     begin
         writeln(i)
         i := i + 1
     end
     
+    writeln(0)
+
+    for i := 20 downto 10 do 
+    begin
+        writeln(i)
+    end
+
 end.

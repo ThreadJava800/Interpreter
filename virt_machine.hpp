@@ -242,6 +242,12 @@ public:
         ast_node (ast_node_)
     {}
 
+    void renewValue(const ASTNode *ast_node_)
+    {
+        delete ast_node;
+        ast_node = ast_node_;
+    }
+
     void execute() override;
 
     ~AssignCommand()
@@ -294,4 +300,33 @@ public:
 private:
     const ASTNode *bool_part;
     const std::vector<Command*> *cycle_com;
+};
+
+class ForCommand : public Command
+{
+public:
+    explicit ForCommand(
+            const std::string start_var_name_,
+            const ASTNode *start_val_, 
+            const ASTNode *end_val_,
+            const std::vector<Command*> *cycle_com_,
+            const int cycle_step_
+        ) :
+        start_var_name (std::move(start_var_name_)),
+        start_val      (start_val_),
+        end_val        (end_val_),
+        cycle_com      (cycle_com_),
+        cycle_step     (cycle_step_)
+    {}
+
+    void execute() override;
+
+    ~ForCommand();
+
+private:
+    const std::string start_var_name;
+    const ASTNode *start_val;
+    const ASTNode *end_val;
+    const std::vector<Command*> *cycle_com;
+    const int cycle_step;
 };

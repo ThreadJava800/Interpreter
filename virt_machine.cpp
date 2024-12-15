@@ -246,15 +246,60 @@ void PrintCommand::execute()
     default:
         break;
     }
-
-    delete ast_node;
 }
 
 void AssignCommand::execute()
 {
     assert(ast_node);
-
     variables[var_name] = std::move(ast_node->getValue());
+}
 
-    delete ast_node;
+void IfCommand::execute()
+{
+    assert(bool_part);
+    assert(if_com);
+
+    const ASTNodeValue case_val = std::move(bool_part->getValue());
+
+    if (case_val.type != DataType::INTEGER)
+    {
+        std::cerr << "Attempt to use if case as not numeric value! Aborting!\n";
+        exit(-1);
+    }
+
+    if (case_val.int_val)
+    {
+        for (const auto com : *(if_com))
+        {
+            com->execute();
+        }
+    }
+    else if (else_com)
+    {
+        for (const auto com : *(else_com))
+        {
+            com->execute();
+        }
+    }
+}
+
+
+IfCommand::~IfCommand()
+{
+    delete bool_part;
+
+    for (const auto com : *(if_com))
+    {
+        delete com;
+    }
+    delete if_com;
+
+    if (else_com)
+    {
+        for (const auto com : *(else_com))
+        {
+            delete com;
+        }
+        delete else_com;
+    }
 }

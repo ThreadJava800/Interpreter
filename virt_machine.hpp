@@ -3,9 +3,8 @@
 #include <map>
 #include <stack>
 #include <string>
-#include <string_view>
 #include <utility>
-#include <iostream>
+#include <vector>
 
 enum class DataType
 {
@@ -203,6 +202,11 @@ public:
 
     void execute() override;
 
+    ~PrintCommand()
+    {
+        delete ast_node;
+    }
+
 private:
     const ASTNode *ast_node;
 };
@@ -217,7 +221,34 @@ public:
 
     void execute() override;
 
+    ~AssignCommand()
+    {
+        delete ast_node;
+    }
+
 private:
     const std::string var_name;
     const ASTNode *ast_node;
+};
+
+class IfCommand : public Command
+{
+public:
+    explicit IfCommand(
+            const ASTNode *bool_part_, 
+            const std::vector<Command*> *if_com_, 
+            const std::vector<Command*> *else_com_ = nullptr
+        ) :
+        bool_part (bool_part_),
+        if_com    (if_com_),
+        else_com  (else_com_)
+    {}
+
+    void execute() override;
+
+    ~IfCommand();
+
+private:
+    const ASTNode *bool_part;
+    const std::vector<Command*> *if_com, *else_com;
 };

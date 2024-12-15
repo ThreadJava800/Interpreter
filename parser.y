@@ -137,6 +137,16 @@ action:
     {
         $$ = new AssignCommand($1, $3);
     }
+|
+    IF ast_node THEN BEGIN_ actions END
+    {
+        $$ = new IfCommand($2, $5);
+    }
+|
+    IF ast_node THEN BEGIN_ actions END ELSE BEGIN_ actions END
+    {
+        $$ = new IfCommand($2, $5, $9);
+    }
 ;
 
 ast_node:

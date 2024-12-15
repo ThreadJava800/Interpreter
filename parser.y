@@ -276,7 +276,7 @@ ast_node_not:
         $$ = $1;
     }
 |
-    NOT ast_node
+    NOT ast_node_brackets
     {
         $$ = new LogicNotASTNode($2);
     }

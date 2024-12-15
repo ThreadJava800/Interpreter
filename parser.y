@@ -44,6 +44,9 @@
 %left DIV
 
 %type <ASTNode*> ast_node
+%type <ASTNode*> ast_node_mul
+%type <ASTNode*> ast_node_brackets
+%type <ASTNode*> ast_node_leaf
 %type <Command*> action
 %type <std::vector<Command*>*> actions
 %type <Command*> declare_single
@@ -124,6 +127,52 @@ action:
 ;
 
 ast_node:
+    ast_node_mul
+    {
+        $$ = $1;
+    }
+|
+    ast_node_mul ADD ast_node_mul
+    {
+        $$ = new ArithmeticsASTNode(ArithmeticOperators::ADD, $1, $3);
+    }
+|
+    ast_node_mul SUB ast_node_mul
+    {
+        $$ = new ArithmeticsASTNode(ArithmeticOperators::SUB, $1, $3);
+    }
+;
+
+ast_node_mul:
+    ast_node_brackets
+    {
+        $$ = $1;
+    }
+|
+    ast_node_brackets MUL ast_node_brackets
+    {
+        $$ = new ArithmeticsASTNode(ArithmeticOperators::MUL, $1, $3);
+    }
+|
+    ast_node_brackets DIV ast_node_brackets
+    {
+        $$ = new ArithmeticsASTNode(ArithmeticOperators::DIV, $1, $3);
+    }
+;
+
+ast_node_brackets:
+    ast_node_leaf
+    {
+        $$ = $1;
+    }
+|
+    LEFTBR ast_node RIGHTBR
+    {
+        $$ = $2;
+    }
+;
+
+ast_node_leaf:
     NUMBER
     {
         $$ = new ValueASTNode(atoi($1.c_str()));
@@ -132,26 +181,6 @@ ast_node:
     VAR_NAME
     {
         $$ = new VariableASTNode($1);
-    }
-|
-    ast_node ADD ast_node
-    {
-        $$ = new ArithmeticsASTNode(ArithmeticOperators::ADD, $1, $3);
-    }
-|
-    ast_node SUB ast_node
-    {
-        $$ = new ArithmeticsASTNode(ArithmeticOperators::SUB, $1, $3);
-    }
-|
-    ast_node MUL ast_node
-    {
-        $$ = new ArithmeticsASTNode(ArithmeticOperators::MUL, $1, $3);
-    }
-|
-    ast_node DIV ast_node
-    {
-        $$ = new ArithmeticsASTNode(ArithmeticOperators::DIV, $1, $3);
     }
 ;
 

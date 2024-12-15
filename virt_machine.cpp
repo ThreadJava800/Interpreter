@@ -116,9 +116,6 @@ ASTNodeValue ArithmeticsASTNode::getValue() const
     default:
         break;
     }
-    
-    delete left;
-    delete right;
 
     return result;
 }
@@ -160,9 +157,6 @@ ASTNodeValue ComparatorASTNode::getValue() const
         break;
     }
 
-    delete left;
-    delete right;
-
     return result;
 }
 
@@ -176,8 +170,6 @@ ASTNodeValue LogicNotASTNode::getValue() const
         std::cerr << "Attempt to operate logically on incorrect types! Aborting!\n";
         exit(-1);
     }
-
-    delete val;
     
     return !node_val.int_val;
 }
@@ -203,9 +195,6 @@ ASTNodeValue LogicAndOrASTNode::getValue() const
     default:
         break;
     }
-
-    delete left;
-    delete right;
 
     return result;
 }
@@ -302,4 +291,43 @@ IfCommand::~IfCommand()
         }
         delete else_com;
     }
+}
+
+void WhileCommand::execute()
+{
+    assert(bool_part);
+    assert(cycle_com);
+
+    ASTNodeValue case_val = std::move(bool_part->getValue());
+    if (case_val.type != DataType::INTEGER)
+    {
+        std::cerr << "Attempt to use while case as not numeric value! Aborting!\n";
+        exit(-1);
+    }
+
+    while (case_val.int_val)
+    {
+        for (const auto com : *(cycle_com))
+        {
+            com->execute();
+        }
+
+        case_val = std::move(bool_part->getValue());
+        if (case_val.type != DataType::INTEGER)
+        {
+            std::cerr << "Attempt to use while case as not numeric value! Aborting!\n";
+            exit(-1);
+        }
+    }
+}
+
+WhileCommand::~WhileCommand()
+{
+    delete bool_part;
+
+    for (const auto com : *(cycle_com))
+    {
+        delete com;
+    }
+    delete cycle_com;
 }

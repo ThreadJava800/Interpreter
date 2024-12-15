@@ -121,6 +121,12 @@ public:
 
     ASTNodeValue getValue() const override;
 
+    ~ArithmeticsASTNode()
+    {
+        delete left;
+        delete right;
+    }
+
 private:
     const ASTNode *left, *right;
     ArithmeticOperators oper;
@@ -137,6 +143,12 @@ public:
 
     ASTNodeValue getValue() const override;
 
+    ~ComparatorASTNode()
+    {
+        delete left;
+        delete right;
+    }
+
 private:
     const ASTNode *left, *right;
     ComparatorOperators oper;
@@ -150,6 +162,11 @@ public:
     {}
 
     ASTNodeValue getValue() const override;
+
+    ~LogicNotASTNode()
+    {
+        delete val;
+    }
 
 private:
     const ASTNode *val;
@@ -165,6 +182,12 @@ public:
     {}
 
     ASTNodeValue getValue() const override;
+
+    ~LogicAndOrASTNode()
+    {
+        delete left;
+        delete right;
+    }
 
 private:
     const ASTNode *left, *right;
@@ -251,4 +274,24 @@ public:
 private:
     const ASTNode *bool_part;
     const std::vector<Command*> *if_com, *else_com;
+};
+
+class WhileCommand : public Command
+{
+public:
+    explicit WhileCommand(
+            const ASTNode *bool_part_, 
+            const std::vector<Command*> *cycle_com_
+        ) :
+        bool_part (bool_part_),
+        cycle_com (cycle_com_)
+    {}
+
+    void execute() override;
+
+    ~WhileCommand();
+
+private:
+    const ASTNode *bool_part;
+    const std::vector<Command*> *cycle_com;
 };

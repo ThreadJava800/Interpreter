@@ -18,6 +18,7 @@ then                      return yy::parser::token::THEN;
 else                      return yy::parser::token::ELSE;
 while                     return yy::parser::token::WHILE;
 writeln                   return yy::parser::token::WRITELN;
+do                        return yy::parser::token::DO;
 
 "+"                       return yy::parser::token::ADD;
 "-"                       return yy::parser::token::SUB;

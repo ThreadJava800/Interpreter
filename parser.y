@@ -24,6 +24,7 @@
 %token WHILE
 %token WRITELN
 %token ASSIGN
+%token DO
 
 %token INTEGER
 %token DOUBLE
@@ -146,6 +147,11 @@ action:
     IF ast_node THEN BEGIN_ actions END ELSE BEGIN_ actions END
     {
         $$ = new IfCommand($2, $5, $9);
+    }
+|
+    WHILE ast_node DO BEGIN_ actions END
+    {
+        $$ = new WhileCommand($2, $5);
     }
 ;
 
